@@ -13,30 +13,30 @@ export function Hero() {
     <section id="top" className="relative isolate overflow-hidden">
       {/* Backdrop: warm sky + sun + rice terraces */}
       <div aria-hidden className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.95_0.05_80)] via-[oklch(0.96_0.03_90)] to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#ffecc9] via-[#faf1dc] to-background" />
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 1440 720"
           preserveAspectRatio="xMidYMax slice"
         >
           {/* sun */}
-          <circle cx="1080" cy="210" r="120" fill="oklch(0.86 0.11 78)" opacity="0.55" />
-          <circle cx="1080" cy="210" r="80" fill="oklch(0.9 0.1 82)" opacity="0.7" />
+          <circle cx="1080" cy="210" r="120" fill="#f9c87b" opacity="0.55" />
+          <circle cx="1080" cy="210" r="80" fill="#ffd890" opacity="0.7" />
           {/* distant hills */}
           <path
             d="M0 470 Q 360 400 720 460 T 1440 440 V720 H0 Z"
-            fill="oklch(0.62 0.07 150)"
+            fill="#679270"
             opacity="0.35"
           />
           {/* rice terraces */}
           <path
             d="M0 540 Q 400 490 800 540 T 1440 520 V720 H0 Z"
-            fill="oklch(0.58 0.09 150)"
+            fill="#51895e"
             opacity="0.5"
           />
           <path
             d="M0 620 Q 480 570 960 620 T 1440 610 V720 H0 Z"
-            fill="oklch(0.5 0.1 150)"
+            fill="#337344"
             opacity="0.7"
           />
           {/* paddy rows */}
@@ -45,7 +45,7 @@ export function Hero() {
               key={i}
               d={`M0 ${650 + i * 10} Q 480 ${610 + i * 10} 960 ${650 + i * 10} T 1440 ${640 + i * 10}`}
               fill="none"
-              stroke="oklch(0.45 0.09 150)"
+              stroke="#2b633a"
               strokeWidth="1.5"
               opacity="0.35"
             />

@@ -12,7 +12,7 @@ export function Contact() {
   return (
     <section id="contact" className="scroll-mt-20 py-20 sm:py-28">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-gradient-to-br from-[oklch(0.5_0.09_150)] to-[oklch(0.4_0.06_52)] px-6 py-16 text-center shadow-xl sm:px-12">
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-gradient-to-br from-[#397247] to-[#613e28] px-6 py-16 text-center shadow-xl sm:px-12">
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-20">
             <div className="absolute -right-10 -top-10 size-52 rounded-full bg-gold blur-2xl" />
             <div className="absolute -bottom-16 -left-10 size-52 rounded-full bg-leaf blur-2xl" />
