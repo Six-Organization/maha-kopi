@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Playfair_Display, Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/language-provider";
 import { site } from "@/data/site";
+
+// Runtime polyfills for iOS 15.0–15.3 / older Safari (Array.at, String.at,
+// Object.hasOwn land in Safari 15.4). Loaded before app JS so hydration works.
+const IOS_POLYFILLS = `(function(){var A=function(n){n=Math.trunc(n)||0;if(n<0)n+=this.length;return (n<0||n>=this.length)?undefined:this[n]};if(!Array.prototype.at){Object.defineProperty(Array.prototype,'at',{value:A,writable:true,configurable:true})}if(!String.prototype.at){Object.defineProperty(String.prototype,'at',{value:A,writable:true,configurable:true})}if(!Object.hasOwn){Object.defineProperty(Object,'hasOwn',{value:function(o,p){return Object.prototype.hasOwnProperty.call(o,p)},writable:true,configurable:true})}})();`;
 
 const display = Playfair_Display({
   variable: "--font-display",
@@ -56,6 +61,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${display.variable} ${body.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Script
+          id="ios-polyfills"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: IOS_POLYFILLS }}
+        />
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
