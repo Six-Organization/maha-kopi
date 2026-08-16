@@ -51,7 +51,7 @@ export function About() {
 
           {/* Photo panel */}
           <div className="relative">
-            <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] border border-border/60 shadow-xl sm:aspect-square lg:aspect-4/5">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-border/60 shadow-xl sm:aspect-square lg:aspect-[4/5]">
               <Image
                 src={venueOutdoor}
                 alt="MAHA Kopi Bali outdoor terrace with rice-field view"
