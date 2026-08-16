@@ -1,20 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Menu, Phone } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import { Logo } from "@/components/site/logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useLanguage } from "@/components/language-provider";
-import { Button } from "@/components/ui/button";
 import { LinkButton } from "@/components/site/link-button";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +15,7 @@ const LINKS = [
   { href: "#menu", key: "nav.menu" },
   { href: "#gallery", key: "nav.gallery" },
   { href: "#visit", key: "nav.visit" },
+  { href: "#contact", key: "nav.contact" },
 ] as const;
 
 export function Navbar() {
@@ -38,12 +30,25 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock body scroll + close on Escape while the mobile menu is open.
+  React.useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
-          ? "border-b border-border/70 bg-background/85 backdrop-blur-md shadow-sm"
+        scrolled || open
+          ? "border-b border-border/70 bg-background/90 backdrop-blur-md shadow-sm"
           : "bg-transparent",
       )}
     >
@@ -53,7 +58,7 @@ export function Navbar() {
         </a>
 
         <div className="hidden items-center gap-1 md:flex">
-          {LINKS.map((l) => (
+          {LINKS.slice(0, 5).map((l) => (
             <a
               key={l.href}
               href={l.href}
@@ -74,65 +79,62 @@ export function Navbar() {
             {tr("nav.reserve")}
           </LinkButton>
 
-          {/* Mobile */}
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger
-              render={
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full md:hidden"
-                  aria-label="Open menu"
-                />
-              }
-            >
-              <Menu className="size-5" />
-            </SheetTrigger>
-            <SheetContent side="right" className="w-72">
-              <SheetHeader>
-                <SheetTitle className="text-left">
-                  <Logo />
-                </SheetTitle>
-              </SheetHeader>
-              <div className="mt-2 flex flex-col gap-1 px-4">
-                {LINKS.map((l) => (
-                  <SheetClose
-                    key={l.href}
-                    render={
-                      <a
-                        href={l.href}
-                        className="rounded-lg px-3 py-2.5 text-base font-medium text-foreground/90 transition-colors hover:bg-accent"
-                      />
-                    }
-                  >
-                    {tr(l.key)}
-                  </SheetClose>
-                ))}
-                <SheetClose
-                  render={
-                    <a
-                      href="#contact"
-                      className="rounded-lg px-3 py-2.5 text-base font-medium text-foreground/90 transition-colors hover:bg-accent"
-                    />
-                  }
-                >
-                  {tr("nav.contact")}
-                </SheetClose>
-              </div>
-              <div className="mt-4 flex flex-col gap-3 px-4">
-                <LanguageSwitcher />
-                <LinkButton
-                  href={`tel:${site.phone.tel}`}
-                  className="h-10 gap-1.5 rounded-full"
-                >
-                  <Phone className="size-4" />
-                  {tr("nav.reserve")}
-                </LinkButton>
-              </div>
-            </SheetContent>
-          </Sheet>
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition-colors hover:bg-accent md:hidden"
+          >
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
         </div>
       </nav>
+
+      {/* Mobile menu overlay + panel (self-controlled, no external animation lib) */}
+      {/* Backdrop */}
+      <div
+        onClick={() => setOpen(false)}
+        aria-hidden
+        className={cn(
+          "fixed inset-0 top-16 z-40 bg-espresso/40 backdrop-blur-sm transition-opacity duration-300 md:hidden",
+          open ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+      />
+      {/* Panel */}
+      <div
+        className={cn(
+          "fixed inset-x-0 top-16 z-50 origin-top border-b border-border/70 bg-background shadow-xl transition-all duration-300 md:hidden",
+          open
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-3 opacity-0",
+        )}
+      >
+        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4">
+          {LINKS.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-3 text-base font-medium text-foreground/90 transition-colors hover:bg-accent"
+            >
+              {tr(l.key)}
+            </a>
+          ))}
+          <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/60 pt-4">
+            <LanguageSwitcher />
+            <LinkButton
+              href={`tel:${site.phone.tel}`}
+              onClick={() => setOpen(false)}
+              className="h-10 flex-1 gap-1.5 rounded-full"
+            >
+              <Phone className="size-4" />
+              {tr("nav.reserve")}
+            </LinkButton>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }
